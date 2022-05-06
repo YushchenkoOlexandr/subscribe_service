@@ -1,0 +1,32 @@
+version: '3.8'
+
+volumes:
+  pg_data:
+
+services:
+  main:
+    container_name: main
+    build:
+      context: .
+    volumes:
+      - ./src:/usr/app/
+    ports:
+      - 3000:3000
+      - 9229:9229
+    command: npm run start:dev
+    depends_on:
+      - pgSubscrServ
+    restart: always
+  pgSubscrServ:
+    container_name: pgSubscrServ
+    image: postgres:13.6
+    restart: always
+    ports:
+      - '5432:5432'
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=sybscribe_service
+      - POSTGRES_PASSWORD=postgres
+    
